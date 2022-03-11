@@ -35,46 +35,51 @@ class PasswordManager:
 
 	Commands:
 
-	help	-	shows this help page.
-	get		-	copies the password of the given webiste to the clipboard.
-	save	-	stores the password of the given website.
-	delete	-	deletes an entry.
-	export	-	export your data to a csv file
-	import	-	import your data from a csv file
+	help			-	shows this help page.
+	get				-	copies the password of the given webiste to the clipboard.
+	save			-	stores the password of the given website.
+	delete			-	deletes an entry.
+	export			-	export your data to a csv file
+	import			-	import your data from a csv file
 
 	Flags:
 
-	--site	specifies that argument given is an email address.
+	--site			-	specifies that argument given is a website.
 	--username		-	specifies that argument given is a username or email.
-	--pwd	-	specifiers that argument given is a password.
+	--pwd			-	specifiers that argument given is a password.
 
-		""")
+	""")
 
 	# returns the index of arg in args and if not found returns -1
-	def index(self, args, arg):
-		try:
-			return args.index(arg)
-		except ValueError:
-			return -1
+	# def index(self, args, arg):
+	# 	try:
+	# 		return args.index(arg)
+	# 	except ValueError:
+	# 		return -1
 
 	# parses the email, password and username in the given arguments
 	def parse_flags(self):
+		# returns the index of arg in args and if not found returns -1
+		def index(args, arg):
+			try:
+				return args.index(arg)
+			except ValueError:
+				return -1
+
 		flgList = ["--site", "--username", "--pwd"]
 		args = sys.argv[1:]
 		self.flags = {x : "" for x in flgList}
 		for flag in flgList:
-			if self.index(args, flag) == -1:
-				continue
-			self.flags[flag] = args[self.index(args, flag)+1]
+			if self.index(args, flag) >= 0:
+				self.flags[flag] = args[self.index(args, flag)+1]
 
 	# deletes an entry
 	def delete(self):
 		args = list(self.flags.values())
 		self.db.deleteEntry(args[1], args[0])
 		print("Deleted Successfully")
-		return
 
-	# copies the password according to arguments to clipboard
+	# copies the password to clipboard
 	def get(self):
 		args = list(self.flags.values())
 		# if (len(args[0]) == 0 or len(args[1]) == 0):
@@ -86,7 +91,7 @@ class PasswordManager:
 		clip.copy(self.db.getEntry(args[1], args[0]))
 		print("Password Copied to Clipboard")
 
-	# saves the account details to the database
+	# save the details
 	def save(self):
 		args = list(self.flags.values())
 		for x in args:
@@ -96,17 +101,16 @@ class PasswordManager:
 		self.db.addEntry(*args)
 		print("Saved Successfully")
 
-	# runs the program
 	def run(self):
 		try:
 			if (len(sys.argv) < 2):
 				raise SyntaxError()
 
-			cmd = sys.argv[1]
-			if (self.commands.get(cmd, '') == ''):
+			cmd = self.commands.get(sys.argv[1], None)
+			if (cmd is None):
 				raise SyntaxError()
 			self.parse_flags()
-			self.commands.get(cmd)()
+			cmd()
 
 		except Exception as e:
 			e.err_msg()
