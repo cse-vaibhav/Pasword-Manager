@@ -35,18 +35,18 @@ class PasswordManager:
 
 	Commands:
 
-	help			-	shows this help page.
-	get				-	copies the password of the given webiste to the clipboard.
-	save			-	stores the password of the given website.
-	delete			-	deletes an entry.
-	export			-	export your data to a csv file
-	import			-	import your data from a csv file
+	help		-	shows this help page.
+	get		-	copies the password of the given webiste to the clipboard.
+	save		-	stores the password of the given website.
+	delete		-	deletes an entry.
+	export		-	export your data to a csv file
+	import		-	import your data from a csv file
 
 	Flags:
 
-	--site			-	specifies that argument given is a website.
-	--username		-	specifies that argument given is a username or email.
-	--pwd			-	specifiers that argument given is a password.
+	--site		-	specifies that argument given is a website.
+	--username	-	specifies that argument given is a username or email.
+	--pwd		-	specifiers that argument given is a password.
 
 	""")
 
@@ -70,8 +70,8 @@ class PasswordManager:
 		args = sys.argv[1:]
 		self.flags = {x : "" for x in flgList}
 		for flag in flgList:
-			if self.index(args, flag) >= 0:
-				self.flags[flag] = args[self.index(args, flag)+1]
+			if index(args, flag) >= 0:
+				self.flags[flag] = args[index(args, flag)+1]
 
 	# deletes an entry
 	def delete(self):
@@ -106,6 +106,7 @@ class PasswordManager:
 			if (len(sys.argv) < 2):
 				raise SyntaxError()
 
+			# cmd = sys.argv[1]
 			cmd = self.commands.get(sys.argv[1], None)
 			if (cmd is None):
 				raise SyntaxError()
