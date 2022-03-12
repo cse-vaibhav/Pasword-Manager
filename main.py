@@ -3,6 +3,7 @@ from database import *
 
 import clipboard as clip
 import sys
+import os
 import logging
 
 logging.disable()
@@ -31,31 +32,24 @@ class PasswordManager:
 	# prints the help message
 	def help(self):
 		print("""
-	pm is a command-line utility to stores and ret11rieves all your passwords.
+		pm is a command-line utility to stores and ret11rieves all your passwords.
 
-	Commands:
+		Commands:
 
-	help		-	shows this help page.
-	get		-	copies the password of the given webiste to the clipboard.
-	save		-	stores the password of the given website.
-	delete		-	deletes an entry.
-	export		-	export your data to a csv file
-	import		-	import your data from a csv file
+		help		-	shows this help page.
+		get		-	copies the password of the given webiste to the clipboard.
+		save		-	stores the password of the given website.
+		delete		-	deletes an entry.
+		export		-	export your data to a csv file
+		import		-	import your data from a csv file
 
-	Flags:
+		Flags:
 
-	--site		-	specifies that argument given is a website.
-	--username	-	specifies that argument given is a username or email.
-	--pwd		-	specifiers that argument given is a password.
+		--site		-	specifies that argument given is a website.
+		--username	-	specifies that argument given is a username or email.
+		--pwd		-	specifiers that argument given is a password.
 
-	""")
-
-	# returns the index of arg in args and if not found returns -1
-	# def index(self, args, arg):
-	# 	try:
-	# 		return args.index(arg)
-	# 	except ValueError:
-	# 		return -1
+		""")
 
 	# parses the email, password and username in the given arguments
 	def parse_flags(self):

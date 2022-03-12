@@ -16,7 +16,7 @@ class Database:
 			return False
 		try:
 			self.data[username][site]
-			self.data[site[username]]
+			self.data[site][username]
 			return True
 		except KeyError:
 			raise NotFound()

@@ -2,4 +2,5 @@
 *.sublime-project
 *.log
 *.pkl
+*.bat
 __pycache__/
