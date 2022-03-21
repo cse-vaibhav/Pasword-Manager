@@ -32,22 +32,22 @@ class PasswordManager:
 	# prints the help message
 	def help(self):
 		print("""
-		pm is a command-line utility to stores and ret11rieves all your passwords.
+	pm is a command-line utility to stores and ret11rieves all your passwords.
 
-		Commands:
+	Commands:
 
-		help		-	shows this help page.
-		get		-	copies the password of the given webiste to the clipboard.
-		save		-	stores the password of the given website.
-		delete		-	deletes an entry.
-		export		-	export your data to a csv file
-		import		-	import your data from a csv file
+	help\t\t-\tshows this help page.
+	get\t\t-\tcopies the password of the given webiste to the clipboard.
+	save\t\t-\tstores the password of the given website.
+	delete\t\t-\tdeletes an entry.
+	export\t\t-\texport your data to a csv file
+	import\t\t-\timport your data from a csv file
 
-		Flags:
+	Flags:
 
-		--site		-	specifies that argument given is a website.
-		--username	-	specifies that argument given is a username or email.
-		--pwd		-	specifiers that argument given is a password.
+	--site\t\t-\tspecifies that argument given is a website.
+	--username\t-\tspecifies that argument given is a username or email.
+	--pwd\t\t-\tspecifiers that argument given is a password.
 
 		""")
 
