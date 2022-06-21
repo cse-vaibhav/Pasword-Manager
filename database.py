@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import sqlite3 as sql
 import os
 
@@ -42,14 +43,6 @@ class Database:
 
 	def get(self, uname="", site=""):
 
-		# Print all usernames and sites
-		if (len(uname) == 0 and len(site) == 0):
-			self.cur.execute("SELECT *FROM data;")
-			print("\t".join(self.cols[:2]))
-			for row in self.cur.fetchall():
-				print(row[0], "\t\t", row[1])
-			return
-
 		# Check if corresponding entry exists or not
 		if (not self.check(uname, site)):
 			print("No Entry Found.")
@@ -91,4 +84,8 @@ class Database:
 				row = row.strip().split(',')
 				self.save(*row)
 		return
+if __name__ == "__main__":
+    db = Database()
+    print(db.get('jainvaibhav671@gmail.com', "EpicGames"))
+
 

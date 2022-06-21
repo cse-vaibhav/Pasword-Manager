@@ -36,25 +36,25 @@ class PasswordManager:
 	# prints the help message
 	def help(self):
 		print("""
-		pm is a command-line utility to stores and ret11rieves all your passwords.
+    pm is a command-line utility to stores and ret11rieves all your passwords.
 
-		Commands:
+    Commands:
 
-		help\t\t-\tshows this help page.
-		get\t\t-\tcopies the password to the clipboard.
-		save\t\t-\tsave or update password.
-		delete\t\t-\tdeletes an entry.
-		export\t\t-\texport your data to a csv file
-		import\t\t-\timport your data from a csv file
-		list \t\t-\tlists all users and sites stored.
+    help\t\t-\tshows this help page.
+    get\t\t-\tcopies the password to the clipboard.
+    save\t\t-\tsave or update password.
+    delete\t\t-\tdeletes an entry.
+    export\t\t-\texport your data to a csv file
+    import\t\t-\timport your data from a csv file
+    list \t\t-\tlists all users and sites stored.
 
-		Flags:
+    Flags:
 
-		-s\t\t-\tspecifies that argument given is a website.
-		-u\t-\tspecifies that argument given is a username or email.
-		-p\t\t-\tspecifiers that argument given is a password.
+    -s\t\t-\tspecifies that argument given is a website.
+    -u\t-\tspecifies that argument given is a username or email.
+    -p\t\t-\tspecifiers that argument given is a password.
 
-		""")
+        """)
 
 	# parses the email, password and username in the given arguments
 	def parse_flags(self):
@@ -67,7 +67,7 @@ class PasswordManager:
 
 		# flags
 		flgList = ["-s", "-u", "-p"]
-		args = sys.argv[1:]
+		args = list(map(str.strip, sys.argv[1:]))
 		self.flags = {x : "" for x in flgList}
 		for flag in flgList:
 			if index(args, flag) >= 0:
