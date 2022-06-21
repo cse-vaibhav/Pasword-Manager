@@ -1,74 +1,94 @@
-from error import *
-from collections import defaultdict
-import pickle
+import sqlite3 as sql
 import os
 
 class Database:
+	
 	def __init__(self):
-		self.data = defaultdict(defaultdict)
+		self.con = sql.connect('user.db')
+		self.cur = self.con.cursor()
+		self.cols = ["Username", "Site", "Password"]
 
-	def addEntry(self, username, site, pwd):
-		self.data[username][site] = pwd
-		self.data[site][username] = pwd
+		# Create table if it does not already exist
+		if (not self.cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='data'").fetchone()):
+			self.cur.execute("CREATE TABLE data(Username TEXT, Site TEXT, Password TEXT);")
 
-	def checkEntry(self, username, site):
-		if (len(username) == 0 or len(site) == 0):
+	def save(self, uname, site, passwd):
+
+		# Update entry if it already exists
+		if (self.check(uname, site)):
+			self.cur.execute(f"UPDATE data SET Password='{passwd}' WHERE Username='{uname}' AND Site='{site}';")
+			self.con.commit()
+			print("Password Updated.")
+			return
+
+		# Create a new entry otherwise
+		self.cur.execute(f"INSERT INTO data (Username,Site,Password) VALUES('{uname}', '{site}', '{passwd}');")
+		self.con.commit()
+		print(f"Saved Password.")
+		return
+
+	def delete(self, uname, site):
+
+		# Check if the entry exists or not
+		if (not self.check(uname, site)):
+			print("No Entry Found.")
+			return
+
+		# Delete the entry
+		self.cur.execute(f"DELETE FROM data WHERE Username='{uname}' AND Site='{site}';")
+		self.con.commit()
+		print("Entry Deleted.")
+		return
+
+	def get(self, uname="", site=""):
+
+		# Print all usernames and sites
+		if (len(uname) == 0 and len(site) == 0):
+			self.cur.execute("SELECT *FROM data;")
+			print("\t".join(self.cols[:2]))
+			for row in self.cur.fetchall():
+				print(row[0], "\t\t", row[1])
+			return
+
+		# Check if corresponding entry exists or not
+		if (not self.check(uname, site)):
+			print("No Entry Found.")
+			return
+
+		# Copy the entry to the clipboard
+		self.cur.execute(f"SELECT * FROM data WHERE Username='{uname}' AND Site='{site}';")
+		return self.cur.fetchone()[2]
+
+	def check(self, uname="", site=""):
+		self.cur.execute(f"SELECT Username,Site FROM data WHERE Username='{uname}' AND Site='{site}'")
+		if (len(self.cur.fetchall()) == 0):
 			return False
-		try:
-			self.data[username][site]
-			self.data[site][username]
-			return True
-		except KeyError:
-			raise NotFound()
+		return True
 
-	def deleteEntry(self, username, site):
-		if self.checkEntry(username, site):
-			del self.data[username][site]
-			del self.data[site][username]
+	"""
+	Have the function export data to formats other than csv.
+	"""
+	def export_data(self, path, fmt="csv"):
 
-	def getEntry(self, username = '', site = ''):
+		# convert the path to absolute path before exporting
+		path = os.path.join(os.path.abspath(path))
+		with open(path, 'w') as file:
+			file.write(",".join(self.cols))
+			self.cur.execute("SELECT * FROM data;")
+			for row in self.cur.fetchall():
+				file.write('\n')
+				file.write(",".join(list(row)))
+		return
 
-		try:
-			if (not self.checkEntry(username, site)):
-				raise NotFound()
-			if (0 in [len(username), len(site)]):
-				if (len(username) == 0):
-					keys = self.data[site].keys()
-				elif (len(site) == 0):
-					keys = self.data[site].keys()
-
-				for x in range(1, len(keys)+1):
-					print(f"{x} {keys[x-1]}")
-
-				idx = int(input("choose from the given options: ").strip(' '))
-				if (idx not in range(1, len(keys)+1)):
-					raise InvalidArgument()
-
-				if (len(username) == 0):
-					username = keys[idx-1]
-				elif (len(site) == 0):
-					site = keys[idx-1]
-			return self.data[site][username]
-		except:
-			raise NotFound()
-
-	def save(self):
-		with open("pass.pkl", 'wb') as db:
-			pickle.dump(self.data, db)
-
-	def load(self):
-		with open("pass.pkl", 'rb') as db:
-			try:
-				self.data = pickle.load(db)
-			except:
-				return
-				
-	# def to_csv(self, path):
-	# 	with open(f"{os.path.join([path, 'data.csv'])}", "w") as expData:
-	# 		x = defaultdict(defaultdict)
-	# 		expData.write("Usernames, Webiste, PassWord")
-	# 		for k, v in self.data.items():
-
-
-	# 		pass
+	"""
+	Have the function import data from formats other than csv.
+	"""
+	def import_data(self, file_path, fmt="csv"):
+		file_path = os.path.abspath(file_path)
+		with open(file_path, 'r') as file:
+			file.readline()
+			for row in file.readlines():
+				row = row.strip().split(',')
+				self.save(*row)
+		return
 
